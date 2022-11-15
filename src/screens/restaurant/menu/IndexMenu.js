@@ -1,13 +1,16 @@
 import React from 'react';
 import {
   FlatList,
-  ScrollView,
+  Alert,
   View,
   Image,
   Text,
   TouchableOpacity,
 } from 'react-native';
-import { styles } from '../../../assets/css/style';
+import { styles } from '../../../../assets/css/style';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useIsFocused } from '@react-navigation/native';
+
 
 
 const DATA = [{
@@ -41,9 +44,31 @@ const DATA = [{
 
 ];
 
-const Item = ({id,nombre,descripcion,precio,imagen}) => {
+const Item = ({id,nombre,descripcion,precio,imagen,navigation}) => {
+
+  const remove = () => {
+    Alert.alert(
+      "¿Está seguro?",
+      "¿Está seguro de que desea eliminar el registro?",
+      [
+        // The "Yes" button
+        {
+          text: "Si",
+          onPress: () => {
+            console.log("eliminar a la verga")
+          },
+        },
+        // The "No" button
+        // Does nothing but dismiss the dialog when tapped
+        {
+          text: "No",
+        },
+      ]
+    );
+  }
+
   return(
-    <TouchableOpacity style={styles.item} activeOpacity={0.8}>
+    <View style={styles.item} activeOpacity={0.8}>
       <Text style={{fontFamily:'LilyScriptOne-Regular',textAlign:'center',color:'#A60703'}}>{nombre}</Text>
       <View style={styles.itemFood}>
          <View style={styles.itemFoodPhoto}>
@@ -57,38 +82,71 @@ const Item = ({id,nombre,descripcion,precio,imagen}) => {
           
         
       </View>
-    </TouchableOpacity>
+
+    
+      <View style={{flexDirection:'row',alignSelf:'flex-end'}}>
+      <TouchableOpacity 
+        style={{marginHorizontal:10,backgroundColor:'#A60703',width:40,borderRadius:5}}  
+        activeOpacity={0.8}
+        onPress={() => navigation.navigate("updateMenu",{'id':id})}
+        > 
+        <Icon size={40} name="pencil-outline" color="#f2f2f2" />
+      </TouchableOpacity>
+      <TouchableOpacity 
+        style={{marginHorizontal:10,backgroundColor:'#A60703',width:40,borderRadius:5}}  
+        activeOpacity={0.8}
+        onPress={remove}
+      > 
+        <Icon size={40} name="delete" color="#f2f2f2" />
+      </TouchableOpacity>
+      </View>
+      
+      
+    </View>
   );
 }
 
-const MenuClient = () => {
+const IndexMenu= ({navigation}) => {
+
+  const isFocused = useIsFocused();
+
+  const renderItem = ({ item }) => {
+    return(
+      <Item id={item.id} nombre={item.nombre}  descripcion={item.descripcion}  precio={item.precio}  imagen={item.imagen} navigation={navigation} ></Item>
+
+    );
+
+
+  }
+
+  React.useEffect(() => {
+    if (isFocused===true){
+      console.log("me voy a actualizar a la verga");
+    }
+   
+  },[isFocused]);
+
+
+  return (
+
     
 
-
-    const renderItem = ({ item }) => {
-      return(
-        <Item id={item.id} nombre={item.nombre}  descripcion={item.descripcion}  precio={item.precio}  imagen={item.imagen}  ></Item>
-
-      );
-
-
-    }
-
-
-    return (
-
+    <View style={styles.container}>
+      <FlatList
+        data={DATA}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+      />
+      <TouchableOpacity style={{marginTop:10,alignSelf:'flex-end',backgroundColor:'#A60703',width:50,borderRadius:100}}  
+      activeOpacity={0.8}
+      onPress={() => navigation.navigate('insertMenu') }
+      > 
+        <Icon size={50} name="plus" color="#f2f2f2" />
+      </TouchableOpacity>
+    </View>
       
-
-      <View style={styles.container}>
-        <FlatList
-          data={DATA}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-        />
-      </View>
-        
-    );
-  };
+  );
+};
 
 
-export default MenuClient;
+export default IndexMenu ;

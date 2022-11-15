@@ -27,6 +27,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import Login from './src/screens/Login';
 import Menu from './src/screens/Menu';
+import { AuthProvider } from './src/context/AuthContext';
 
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
@@ -34,7 +35,9 @@ import Menu from './src/screens/Menu';
 
 const App: () => Node = () => {
   return (
-    <Menu/>
+    <AuthProvider>
+      <Menu/>
+    </AuthProvider>
   );
 };
 
