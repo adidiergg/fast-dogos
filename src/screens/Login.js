@@ -20,7 +20,7 @@ const Login = () => {
 
     const {signIn,role} = useContext(AuthContext);
 
-    const [celular,setCelular] = useState("");
+    const [usuario,setUsuario] = useState("");
     const [password,setPassword] = useState("");
 
     const SignIn = () => {
@@ -40,8 +40,8 @@ const Login = () => {
                   <Image  style={styles.logo} source={require("../../assets/img/logo.png")}></Image>
                   <Text style={styles.title} >Fast dogos</Text>  
                   
-                  <TextInput  style={styles.input} onChangeText={(celular) => setCelular(celular) }
-                  placeholder="Celular"
+                  <TextInput  style={styles.input} onChangeText={(usuario) => setUsuario(usuario) }
+                  placeholder="Usuario"
                   ></TextInput>
 
                   <TextInput  style={styles.input} secureTextEntry={true} onChangeText={(password) => setPassword(password) }
@@ -51,7 +51,7 @@ const Login = () => {
 
 
                   <View  style={styles.btn} >
-                      <TouchableOpacity style={styles.buttonContainer} activeOpacity={0.8} onPress={() => signIn({celular:celular,password:password})}>
+                      <TouchableOpacity style={styles.buttonContainer} activeOpacity={0.8} onPress={() => signIn({usuario:usuario,password:password})}>
                           <Text style={styles.buttonText}>Entrar</Text>
                       </TouchableOpacity>
                   </View>

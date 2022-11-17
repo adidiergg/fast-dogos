@@ -15,19 +15,19 @@ import OrdersDelively from './delively/OrdersDelively';
 import OrdersRestaurant from './restaurant/OrdersRestaurant';
 import { AuthContext } from '../context/AuthContext';
 import IndexRestaurant from './restaurant/menu/IndexMenu';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator,DrawerContentScrollView,
+  DrawerItemList,DrawerItem, } from '@react-navigation/drawer';
 import Setup from './client/Setup';
 import InsertMenu from './restaurant/menu/InsertMenu';
 import UpdateMenu from './restaurant/menu/UpdateMenu';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
 
 
 
-
-
-function Home() {
+function TabMenu() {
 
 
     const {role} = useContext(AuthContext);
@@ -76,7 +76,7 @@ function Home() {
       >
 
         {
-          role==='0' ? 
+          role==='INVITADO' ? 
             <>
               <Tab.Screen  name="login" component={Login} options={{
               title: 'Iniciar sesión',
@@ -112,7 +112,7 @@ function Home() {
         }
 
         {
-          role==='1' ? 
+          role==='CLIENTE' ? 
             <>
               <Tab.Screen  name="menuClient" options={{
               title: 'Menú',
@@ -174,7 +174,7 @@ function Home() {
         }
 
         {
-        role==='2' ? 
+        role==='REPARTIDOR' ? 
             <>
               <Tab.Screen  name="ordersDelively" options={{
               title: 'Entregas',
@@ -194,7 +194,7 @@ function Home() {
         }
 
         {
-        role==='3' ? 
+        role==='ADMIN' ? 
             <>
               <Tab.Screen  name="ordersRestaurant" options={{
               title: 'Pedidos',
@@ -234,85 +234,141 @@ function Home() {
 
 
 
+
+function Home()  {
+  const {role} = useContext(AuthContext);
+  return (
+     
+
+          <Stack.Navigator>
+              <Stack.Screen name="TabMenu" component={TabMenu} options={{ headerShown: false }} />
+              
+              {
+              role==='INVITADO' ? 
+                <>
+                
+                </>: 
+                null
+              }
+
+              {
+              role==='CLIENTE' ? 
+                <>
+                
+                </>: 
+                null
+              }
+
+              {
+              role==='REPARTIDOR' ? 
+                <>
+                
+                </>: 
+                null
+              }
+
+              {
+              role==='ADMIN' ? 
+                <>
+
+                  
+                  <Stack.Screen name="insertMenu" component={InsertMenu} 
+                  options={{
+                    title: 'Añadir dogo',
+                    headerStyle: {
+                      
+                      backgroundColor: '#A60703',
+                    },
+                    headerTitleAlign:'center',
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                      fontFamily:'LilyScriptOne-Regular',
+                      
+                    },
+                    }} 
+                  />
+
+                  <Stack.Screen name="updateMenu" component={UpdateMenu} 
+                  options={{
+                    title: 'Editar dogo',
+                    headerStyle: {
+                      
+                      backgroundColor: '#A60703',
+                    },
+                    headerTitleAlign:'center',
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                      fontFamily:'LilyScriptOne-Regular',
+                      
+                    },
+                    }} 
+                  />
+                
+                </>: 
+                null
+              }
+
+
+
+          </Stack.Navigator>
+     
+  );
+};
+
+
+
 const Menu = () => {
-
-    const {role} = useContext(AuthContext);
+    const {role,signOut} = useContext(AuthContext);
     
-
-
     return (
         <NavigationContainer>
-            <Stack.Navigator>
-                <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+          {role==='INVITADO' ? 
+                <>
+                  <Home/>
+                </>: 
+                <Drawer.Navigator initialRouteName="Home"
+                drawerContent={(props) => {
+                  const filteredProps = {
+                    ...props,
+                    state: {
+                      ...props.state,
+                      routeNames: props.state.routeNames.filter(
+                        // To hide single option
+                        // (routeName) => routeName !== 'HiddenPage1',
+                        // To hide multiple options you can add & condition
+                        (routeName) => {
+                          routeName !== ''
+                          && routeName !== 'HiddenPage2';
+                        },
+                      ),
+                      routes: props.state.routes.filter(
+                        (route) =>
+                          route.name !== ''
+                          && route.name !== 'HiddenPage2',
+                      ),
+                    },
+                  };
+                  return (
+                    <DrawerContentScrollView {...filteredProps}>
+                      <DrawerItemList {...filteredProps} />
+                      <DrawerItem label="Logout" onPress={signOut} />
+                    </DrawerContentScrollView>
+                  );
+                }}>
+
+
+
+
+
+                  <Drawer.Screen name="Home" component={Home} options={{ headerShown: false }}  />
                 
-                {
-                role==='0' ? 
-                  <>
-                  
-                  </>: 
-                  null
-                }
+                
+                
+                </Drawer.Navigator>
+          }
 
-                {
-                role==='1' ? 
-                  <>
-                  
-                  </>: 
-                  null
-                }
-
-                {
-                role==='2' ? 
-                  <>
-                  
-                  </>: 
-                  null
-                }
-
-                {
-                role==='3' ? 
-                  <>
-
-                    
-                    <Stack.Screen name="insertMenu" component={InsertMenu} 
-                    options={{
-                      title: 'Añadir dogo',
-                      headerStyle: {
-                        
-                        backgroundColor: '#A60703',
-                      },
-                      headerTitleAlign:'center',
-                      headerTintColor: '#fff',
-                      headerTitleStyle: {
-                        fontFamily:'LilyScriptOne-Regular',
-                        
-                      },
-                      }} 
-                    />
-
-                    <Stack.Screen name="updateMenu" component={UpdateMenu} 
-                    options={{
-                      title: 'Editar dogo',
-                      headerStyle: {
-                        
-                        backgroundColor: '#A60703',
-                      },
-                      headerTitleAlign:'center',
-                      headerTintColor: '#fff',
-                      headerTitleStyle: {
-                        fontFamily:'LilyScriptOne-Regular',
-                        
-                      },
-                      }} 
-                    />
-                  
-                  </>: 
-                  null
-                }
-
-
-
-            </Stack.Navigator>
+          
+          
         </NavigationContainer>
     );
   };

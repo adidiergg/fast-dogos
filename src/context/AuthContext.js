@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 import {Alert} from 'react-native';
-
+import { constans } from '../constants';
 
 const AuthContext = React.createContext();
 
@@ -20,7 +20,8 @@ const AuthProvider = ({children}) => {
           case 'SIGN_OUT':
             return {
               ...prevState,
-              
+              user:'',
+              role:'INVITADO',
             };
         }
       }
@@ -29,8 +30,8 @@ const AuthProvider = ({children}) => {
       const [state, dispatch] = React.useReducer(reducer
         ,
         {
-          user: {},
-          role:'0',
+          user: '',
+          role:'INVITADO',
           isLogged: false,
         }
       );
@@ -38,8 +39,33 @@ const AuthProvider = ({children}) => {
 
       const authContext = React.useMemo(
         () => ({
-          signIn: async ({celular,password}) => {
-                console.log(celular,password)
+          signIn: async ({usuario,password}) => {
+            var http = new XMLHttpRequest();
+            var url = constans.url_api+"/auth";
+            var params = 'usuario='+usuario+'&password='+password;
+            http.open('POST', url, true);
+            //Send the proper header information along with the request
+            http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            http.onreadystatechange = function() {//Call a function when the state changes.
+                if(http.readyState == 4 && http.status == 200) {
+                    datos = JSON.parse(http.responseText);
+                    dispatch({ type: 'SIGN_IN', user: datos.id , role:datos.role});
+                    
+                }
+        
+                if(http.readyState == 4 && http.status == 400) {
+                  Alert.alert("Error",http.responseText);
+                }
+        
+        
+            }
+            http.send(params);
+
+
+
+
+            /*
+                console.log(usuario,password)
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
@@ -56,9 +82,9 @@ const AuthProvider = ({children}) => {
                       }
                     }
                 };
-                xhttp.open("GET", "https://imnotame.000webhostapp.com/dogos/signin.php?celular="+celular+"&pass="+password, true);
+                xhttp.open("GET", "https://imnotame.000webhostapp.com/dogos/signin.php?celular="+usuario+"&pass="+password, true);
                 xhttp.send();
-            
+            */
             /*
             if (celular==='3310817155' &&  password==='1234' ){
               dispatch({ type: 'SIGN_IN', user: 'cliente' , role:1});
