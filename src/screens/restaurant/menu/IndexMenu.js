@@ -1,4 +1,4 @@
-import React from 'react';
+import React , {useState} from 'react';
 import {
   FlatList,
   Alert,
@@ -10,41 +10,9 @@ import {
 import { styles } from '../../../../assets/css/style';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useIsFocused } from '@react-navigation/native';
+import { constans } from '../../../constants';
 
-
-
-const DATA = [{
-  id:1,
-  nombre:'MEXA',
-  descripcion:"Pan natural, salchicha Bratwurst (100% carne de cerdo). Aguacate, tocino y mayonesa de jalapeño.",
-  precio:80,
-  imagen:'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.tripadvisor.com.mx%2FShowUserReviews-g150798-d10325587-r612100257-Furter_Hot_Dogs_Gourmet-Guadalajara_Guadalajara_Metropolitan_Area.html&psig=AOvVaw2lEXRO90tI2RzMeUrhMhZo&ust=1668138689835000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCKCS6ILbovsCFQAAAAAdAAAAABAK'
-},
-{
-  id:2,
-  nombre:'MEXA',
-  descripcion:"Pan natural, salchicha Bratwurst (100% carne de cerdo). Aguacate, tocino y mayonesa de jalapeño.",
-  precio:80,
-  imagen:'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.tripadvisor.com.mx%2FShowUserReviews-g150798-d10325587-r612100257-Furter_Hot_Dogs_Gourmet-Guadalajara_Guadalajara_Metropolitan_Area.html&psig=AOvVaw2lEXRO90tI2RzMeUrhMhZo&ust=1668138689835000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCKCS6ILbovsCFQAAAAAdAAAAABAK'
-},
-{
-  id:3,
-  nombre:'MEXA',
-  descripcion:"Pan natural, salchicha Bratwurst (100% carne de cerdo). Aguacate, tocino y mayonesa de jalapeño.",
-  precio:80,
-  imagen:'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.tripadvisor.com.mx%2FShowUserReviews-g150798-d10325587-r612100257-Furter_Hot_Dogs_Gourmet-Guadalajara_Guadalajara_Metropolitan_Area.html&psig=AOvVaw2lEXRO90tI2RzMeUrhMhZo&ust=1668138689835000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCKCS6ILbovsCFQAAAAAdAAAAABAK'
-},
-{
-  id:4,
-  nombre:'MEXA',
-  descripcion:"Pan natural, salchicha Bratwurst (100% carne de cerdo). Aguacate, tocino y mayonesa de jalapeño.",
-  precio:80,
-  imagen:'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.tripadvisor.com.mx%2FShowUserReviews-g150798-d10325587-r612100257-Furter_Hot_Dogs_Gourmet-Guadalajara_Guadalajara_Metropolitan_Area.html&psig=AOvVaw2lEXRO90tI2RzMeUrhMhZo&ust=1668138689835000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCKCS6ILbovsCFQAAAAAdAAAAABAK'
-}
-
-];
-
-const Item = ({id,nombre,descripcion,precio,imagen,navigation}) => {
+const Item = ({id,nombre,descripcion,precio,imagen,navigation,setDogos}) => {
 
   const remove = () => {
     Alert.alert(
@@ -55,7 +23,32 @@ const Item = ({id,nombre,descripcion,precio,imagen,navigation}) => {
         {
           text: "Si",
           onPress: () => {
-            console.log("eliminar a la verga")
+            var http = new XMLHttpRequest();
+            http.onreadystatechange = function() {
+                if(http.readyState == 4 && http.status == 200) {
+                  Alert.alert("Ok",http.responseText);
+                  var xhttp = new XMLHttpRequest();
+                  xhttp.onreadystatechange = function() {
+                      if (this.readyState == 4 && this.status == 200) {
+                        datos = JSON.parse(xhttp.responseText);
+                        setDogos(datos);
+                      }
+                  };
+                  xhttp.open("GET", constans.url_api+"/menu", true);
+                  xhttp.send();
+                  
+                }
+        
+                if(http.readyState == 4 && http.status == 400) {
+                  Alert.alert("Error",http.responseText);
+                }
+            };
+            http.open("DELETE", constans.url_api+"/menu/"+id, true);
+            http.send();
+
+
+
+            
           },
         },
         // The "No" button
@@ -72,7 +65,7 @@ const Item = ({id,nombre,descripcion,precio,imagen,navigation}) => {
       <Text style={{fontFamily:'LilyScriptOne-Regular',textAlign:'center',color:'#A60703'}}>{nombre}</Text>
       <View style={styles.itemFood}>
          <View style={styles.itemFoodPhoto}>
-            <Image style={{flex:1,width:null,height:null,borderRadius:10,}} resizeMode='contain' source={{uri:"https://pixabay.com/get/g8eaac65e73f0d9c446795b83bad842a9ff0681fc0abf2498205d4a67dfa07e8229a05a095cadc78f2daba59c5785d7e265f10b28abaca0e1f4592fa8d8105d66_1920.jpg"}} ></Image>
+            <Image style={{flex:1,width:null,height:null,borderRadius:10,}} resizeMode='contain' source={{uri:imagen}} ></Image>
           </View>
           <View style={styles.itemFoodDescription}>
             
@@ -110,21 +103,34 @@ const IndexMenu= ({navigation}) => {
 
   const isFocused = useIsFocused();
 
+  const [dogos,setDogos] = useState([]);
+
   const renderItem = ({ item }) => {
     return(
-      <Item id={item.id} nombre={item.nombre}  descripcion={item.descripcion}  precio={item.precio}  imagen={item.imagen} navigation={navigation} ></Item>
-
+      <Item id={item.id} nombre={item.nombre}  descripcion={item.descripcion}  precio={item.precio}  imagen={item.imagen} navigation={navigation} setDogos={setDogos} ></Item>
     );
-
-
   }
 
   React.useEffect(() => {
     if (isFocused===true){
-      console.log("me voy a actualizar a la verga");
+
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            datos = JSON.parse(xhttp.responseText);
+            setDogos(datos);
+          }
+      };
+      xhttp.open("GET", constans.url_api+"/menu", true);
+      xhttp.send();
     }
    
   },[isFocused]);
+
+
+  React.useEffect(() => {
+    
+  },[dogos]);
 
 
   return (
@@ -133,7 +139,8 @@ const IndexMenu= ({navigation}) => {
 
     <View style={styles.container}>
       <FlatList
-        data={DATA}
+        refreshing={true}
+        data={dogos}
         renderItem={renderItem}
         keyExtractor={item => item.id}
       />

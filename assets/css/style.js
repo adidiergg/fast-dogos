@@ -32,7 +32,6 @@ export const styles = StyleSheet.create({
      
     },
     itemFoodPhoto:{
-     
       width:'50%',
       aspectRatio: 1*1.4,
     },
@@ -62,6 +61,12 @@ export const styles = StyleSheet.create({
           height:125,
           resizeMode:"contain",
           alignSelf:'center',
+      },
+      foodPhoto:{
+        resizeMode:"contain",
+        alignSelf:'center',
+        width:'60%',
+        aspectRatio: 1*1.4,
       },
       input:{
           borderWidth:1,

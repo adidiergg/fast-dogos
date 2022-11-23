@@ -67,12 +67,12 @@ const Register = () => {
               onChangeText={(nombre) => setNombre(nombre)}
               ></TextInput>
 
-              <TextInput  style={styles.input}
+              <TextInput keyboardType='phone-pad' style={styles.input}
               placeholder="Celular"
               onChangeText={(celular) => setCelular(celular)}
               ></TextInput>
 
-              <TextInput  style={styles.input}
+              <TextInput secureTextEntry={true}  style={styles.input}
               placeholder="Contraseña"
               onChangeText={(password) => setPassword(password)}
               ></TextInput>

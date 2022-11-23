@@ -28,7 +28,7 @@ import {
 import Login from './src/screens/Login';
 import Menu from './src/screens/Menu';
 import { AuthProvider } from './src/context/AuthContext';
-
+import { CartProvider } from './src/context/CartContext.js';
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
 
@@ -36,7 +36,9 @@ import { AuthProvider } from './src/context/AuthContext';
 const App: () => Node = () => {
   return (
     <AuthProvider>
-      <Menu/>
+      <CartProvider>
+        <Menu/>
+      </CartProvider>
     </AuthProvider>
   );
 };

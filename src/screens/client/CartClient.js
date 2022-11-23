@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useRef, useState} from 'react';
 import {
   FlatList,
   ScrollView,
@@ -9,85 +9,162 @@ import {
 } from 'react-native';
 import { styles } from '../../../assets/css/style';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-const DATA = [{
-  id:1,
-  nombre:'MEXA',
-  descripcion:"Pan natural, salchicha Bratwurst (100% carne de cerdo). Aguacate, tocino y mayonesa de jalapeño.",
-  precio:80,
-  imagen:'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.tripadvisor.com.mx%2FShowUserReviews-g150798-d10325587-r612100257-Furter_Hot_Dogs_Gourmet-Guadalajara_Guadalajara_Metropolitan_Area.html&psig=AOvVaw2lEXRO90tI2RzMeUrhMhZo&ust=1668138689835000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCKCS6ILbovsCFQAAAAAdAAAAABAK'
-},
-{
-  id:2,
-  nombre:'MEXA',
-  descripcion:"Pan natural, salchicha",
-  precio:80,
-  imagen:'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.tripadvisor.com.mx%2FShowUserReviews-g150798-d10325587-r612100257-Furter_Hot_Dogs_Gourmet-Guadalajara_Guadalajara_Metropolitan_Area.html&psig=AOvVaw2lEXRO90tI2RzMeUrhMhZo&ust=1668138689835000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCKCS6ILbovsCFQAAAAAdAAAAABAK'
-},
-{
-  id:3,
-  nombre:'MEXA',
-  descripcion:"Pan natural, salchicha Bratwurst (100% carne de cerdo). Aguacate, tocino y mayonesa de jalapeño.",
-  precio:80,
-  imagen:'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.tripadvisor.com.mx%2FShowUserReviews-g150798-d10325587-r612100257-Furter_Hot_Dogs_Gourmet-Guadalajara_Guadalajara_Metropolitan_Area.html&psig=AOvVaw2lEXRO90tI2RzMeUrhMhZo&ust=1668138689835000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCKCS6ILbovsCFQAAAAAdAAAAABAK'
-},
-{
-  id:4,
-  nombre:'MEXA',
-  descripcion:"Pan natural, salchicha Bratwurst (100% carne de cerdo). Aguacate, tocino y mayonesa de jalapeño.",
-  precio:80,
-  imagen:'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.tripadvisor.com.mx%2FShowUserReviews-g150798-d10325587-r612100257-Furter_Hot_Dogs_Gourmet-Guadalajara_Guadalajara_Metropolitan_Area.html&psig=AOvVaw2lEXRO90tI2RzMeUrhMhZo&ust=1668138689835000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCKCS6ILbovsCFQAAAAAdAAAAABAK'
+import { CartContext } from '../../context/CartContext';
+import { constans } from '../../constants';
+
+
+
+const Item = ({position,id,cantidad,setTotal,total}) => {
+  const [dogo,setDogo] = useState({});
+  const [subtotal,setSubtotal] = useState(0);
+  const {carrito,pop} = useContext(CartContext) 
+
+  React.useEffect(() => {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            datos = JSON.parse(xhttp.responseText);
+            setDogo(datos);
+        }
+
+        if (this.readyState == 4 && this.status == 400) {
+            //datos = JSON.parse(xhttp.responseText);
+            console.log(xhttp.responseText)
+            //setDogo(datos);
+        }
+        
+    };
+    xhttp.open("GET", constans.url_api+"/menu/"+id, true);
+    xhttp.send();
+
+  
+  },[carrito]);
+
+
+  React.useEffect(() => {
+   setSubtotal(dogo.precio*cantidad);
+   
+   //setTotal(total+1);
+  },[dogo]);
+
+  React.useEffect(() => {
+    
+   
+    if (!isNaN(subtotal)){
+      setTotal(total+Number(subtotal));
+      console.log("---")
+      console.log(dogo);
+      console.log(subtotal);
+    }
+    
+    //setTotal(total+subtotal);
+    //setTotal(Number(subtotal));
+   },[subtotal]);
+
+
+   const remove = ()=>{
+      pop({position:position})
+      setTotal(total-Number(subtotal));
+   }
+
+  
+
+  return(
+    <View style={styles.item}>
+      <View style={{flexDirection:'row',alignSelf:'flex-end'}}>
+        <TouchableOpacity 
+        onPress={remove}
+        style={{marginHorizontal:10,backgroundColor:'#A60703',width:40,borderRadius:5}}  
+        activeOpacity={0.8}
+        
+        > 
+        <Icon size={40} name="close" color="#f2f2f2" />
+        </TouchableOpacity>
+      </View>
+     
+      <Text style={{fontFamily:'LilyScriptOne-Regular',textAlign:'center',color:'#A60703'}}>{dogo.nombre}
+      
+      </Text>
+      <View style={styles.itemFood}>
+         <View style={styles.itemFoodPhoto}>
+            <Image style={{flex:1,width:null,height:20,borderRadius:10,}} resizeMode='contain' source={{uri:dogo.imagen}} ></Image>
+          </View>
+          <View style={styles.itemFoodDescription}>
+            <Text style={{textAlign:'left',fontFamily:'Lato-Bold',color:'#A60703'}}>Cantidad: 
+            <Text style={{fontFamily:'Lato-Bold',color:'#3d3a35'}}> {cantidad}</Text>
+            </Text>
+            
+           
+            <Text style={{textAlign:'left',fontFamily:'Lato-Bold',color:'#A60703'}}>Precio: 
+            <Text style={{fontFamily:'Lato-Bold',color:'#3d3a35'}}> {dogo.precio} MXN</Text>
+            </Text>
+
+            <Text style={{textAlign:'left',fontFamily:'Lato-Bold',color:'#A60703'}}>SubTotal: 
+            <Text style={{fontFamily:'Lato-Bold',color:'#3d3a35'}}> {subtotal} MXN</Text>
+            </Text>
+          </View>
+          
+        
+      </View>
+    </View>
+
+ 
+
+  );
 }
 
-];
+const CartClient = ({navigation}) => {
 
-const CartClient = () => {
-
-  const renderItem = ({ item }) => {
-    return(
-      <Item id={item.id} nombre={item.nombre}  descripcion={item.descripcion}  precio={item.precio}  imagen={item.imagen}  ></Item>
-
-    );
-
-
-  }
-
-
-  const Item = ({id,nombre,descripcion,precio,imagen}) => {
-    return(
-      <View style={styles.item}>
-       <TouchableOpacity activeOpacity={0.8}> 
-        <Text style={{textAlign:'right'}}><Icon size={15} name="close" color="#A60703" /></Text>
-       </TouchableOpacity>
-        <Text style={{fontFamily:'LilyScriptOne-Regular',textAlign:'center',color:'#A60703'}}>{nombre}
+    const {carrito,pop} = useContext(CartContext) 
+    const [total,setTotal] = useState(0);
+    //const prevTotal = usePrevious(total)
+    //const total = useRef(0);
+    
+    React.useEffect(() => {
+      //setTotal(0);
+     
+      /*
+      carrito.map(producto => {
         
-        </Text>
-        <View style={styles.itemFood}>
-           <View style={styles.itemFoodPhoto}>
-              <Image style={{flex:1,width:null,height:20,borderRadius:10,}} resizeMode='contain' source={{uri:"https://pixabay.com/get/g8eaac65e73f0d9c446795b83bad842a9ff0681fc0abf2498205d4a67dfa07e8229a05a095cadc78f2daba59c5785d7e265f10b28abaca0e1f4592fa8d8105d66_1920.jpg"}} ></Image>
-            </View>
-            <View style={styles.itemFoodDescription}>
-              <Text style={{textAlign:'left',fontFamily:'Lato-Bold',color:'#A60703'}}>Cantidad: 
-              <Text style={{fontFamily:'Lato-Bold',color:'#3d3a35'}}> 1</Text>
-              </Text>
-              
-             
-              <Text style={{textAlign:'left',fontFamily:'Lato-Bold',color:'#A60703'}}>Precio: 
-              <Text style={{fontFamily:'Lato-Bold',color:'#3d3a35'}}> 1 MXN</Text>
-              </Text>
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                datos = JSON.parse(xhttp.responseText);
+                setTotal(total+(Number(datos.precio)*producto.cantidad))
+                //total.current = total.current +  (Number(datos.precio)*producto.cantidad);
 
-              <Text style={{textAlign:'left',fontFamily:'Lato-Bold',color:'#A60703'}}>SubTotal: 
-              <Text style={{fontFamily:'Lato-Bold',color:'#3d3a35'}}> 1 MXN</Text>
-              </Text>
-            </View>
-            
-          
-        </View>
-      </View>
+                console.log(xhttp.responseText)
+                console.log(producto)
+            }      
+        };
+        xhttp.open("GET", constans.url_api+"/menu/price/"+String(producto.id), true);
+        xhttp.send();
 
-   
+        
 
-    );
-  }
+      });
+      */
+      
+      
+     },[carrito]);
+
+
+     
+
+     React.useEffect(() => {
+      console.log(total);
+     },[total]);
+
+ 
+
+    const renderItem = ({ item }) => {
+      return(
+        <Item  position={item.position} id={item.id} cantidad={item.cantidad} total={total} setTotal={setTotal} ></Item>
+      );
+    }
+
+
+  
 
   return (
 
@@ -95,16 +172,16 @@ const CartClient = () => {
 
     <View style={styles.container}>
       <FlatList
-        data={DATA}
+        data={carrito}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.position}
       />
       <View style={styles.menu}>
         <Text style={{textAlign:'right',fontFamily:'Lato-Bold',fontSize:18,color:'#A60703'}}>Total: 
-        <Text style={{fontFamily:'Lato-Bold',fontSize:18,color:'#3d3a35'}}> 100 MXN</Text>
+        <Text style={{fontFamily:'Lato-Bold',fontSize:18,color:'#3d3a35'}}> {total} MXN</Text>
         </Text>
       <View  style={styles.btn} >
-        <TouchableOpacity style={styles.buttonContainer} activeOpacity={0.8} >
+        <TouchableOpacity  onPress={() => navigation.navigate("orderClient")} style={styles.buttonContainer} activeOpacity={0.8} >
           <Text style={styles.buttonText}>Pedir</Text>
         </TouchableOpacity>
       </View>

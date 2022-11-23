@@ -20,6 +20,9 @@ import { createDrawerNavigator,DrawerContentScrollView,
 import Setup from './client/Setup';
 import InsertMenu from './restaurant/menu/InsertMenu';
 import UpdateMenu from './restaurant/menu/UpdateMenu';
+import AddCart from './client/AddCart';
+import EditClient from './client/EditClient';
+import OrderClient from './client/OrderClient';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -254,6 +257,54 @@ function Home()  {
               {
               role==='CLIENTE' ? 
                 <>
+                  <Stack.Screen name="addCart" component={AddCart} 
+                    options={{
+                      title: 'Añadir a carrito',
+                      headerStyle: {
+                        
+                        backgroundColor: '#A60703',
+                      },
+                      headerTitleAlign:'center',
+                      headerTintColor: '#fff',
+                      headerTitleStyle: {
+                        fontFamily:'LilyScriptOne-Regular',
+                        
+                      },
+                      }} 
+                    />
+
+                    <Stack.Screen name="editClient" component={EditClient} 
+                    options={{
+                      title: 'Editar cliente',
+                      headerStyle: {
+                        
+                        backgroundColor: '#A60703',
+                      },
+                      headerTitleAlign:'center',
+                      headerTintColor: '#fff',
+                      headerTitleStyle: {
+                        fontFamily:'LilyScriptOne-Regular',
+                        
+                      },
+                      }} 
+                    />
+
+
+                    <Stack.Screen name="orderClient" component={OrderClient} 
+                    options={{
+                      title: 'Pedido',
+                      headerStyle: {
+                        
+                        backgroundColor: '#A60703',
+                      },
+                      headerTitleAlign:'center',
+                      headerTintColor: '#fff',
+                      headerTitleStyle: {
+                        fontFamily:'LilyScriptOne-Regular',
+                        
+                      },
+                      }} 
+                    />
                 
                 </>: 
                 null

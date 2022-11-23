@@ -62,34 +62,6 @@ const AuthProvider = ({children}) => {
             http.send(params);
 
 
-
-
-            /*
-                console.log(usuario,password)
-                var xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                      response = xhttp.responseText;
-                      if(response==='0'){
-                        Alert.alert("Error","No se iniciar sesión");
-                      }else{
-                        
-                        datos = JSON.parse(response);
-                        role = datos[0].role;
-                        user = datos[1];
-                        dispatch({ type: 'SIGN_IN', user: user , role:role});
-                        
-                      }
-                    }
-                };
-                xhttp.open("GET", "https://imnotame.000webhostapp.com/dogos/signin.php?celular="+usuario+"&pass="+password, true);
-                xhttp.send();
-            */
-            /*
-            if (celular==='3310817155' &&  password==='1234' ){
-              dispatch({ type: 'SIGN_IN', user: 'cliente' , role:1});
-            }*/
-            
           },
           signOut: () => dispatch({ type: 'SIGN_OUT' }),
           signUp: async ({celular,password}) => {
@@ -97,6 +69,7 @@ const AuthProvider = ({children}) => {
             dispatch({ type: 'SIGN_IN', user: 'dummy-auth-token' , role:3 });
           },
           role:state.role,
+          user:state.user,
         }),
         [state]
     );
