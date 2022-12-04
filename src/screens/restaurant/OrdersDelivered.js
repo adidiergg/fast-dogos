@@ -15,25 +15,24 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 const Item = ({id,direccion,estado,setPedidos,navigation}) => {
+    const [total,setTotal] = useState(0);
 
-  const [total,setTotal] = useState(0);
 
-
-  React.useEffect(() => {
+    React.useEffect(() => {
+        
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+            datos = JSON.parse(xhttp.responseText);
+            setTotal(datos.total);
+            }
+        };
+        xhttp.open("GET", constans.url_api+"/delivery/total/"+String(id), true);
+        xhttp.send();
     
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          datos = JSON.parse(xhttp.responseText);
-          setTotal(datos.total);
-        }
-    };
-    xhttp.open("GET", constans.url_api+"/delivery/total/"+String(id), true);
-    xhttp.send();
-  
- 
-  },[]);
-
+    
+    },[]);
+  /*
   const add = () => {
       var http = new XMLHttpRequest();
       var url = constans.url_api+"/delivery/"+String(id);
@@ -63,6 +62,7 @@ const Item = ({id,direccion,estado,setPedidos,navigation}) => {
       }
       http.send(params);
   }
+  */
 
 
   const remove = () => {
@@ -82,7 +82,7 @@ const Item = ({id,direccion,estado,setPedidos,navigation}) => {
                 setPedidos(datos);
               }
           };
-          xhttp.open("GET", constans.url_api+"/delivery/iniciado", true);
+          xhttp.open("GET", constans.url_api+"/delivery/enviado", true);
           xhttp.send();
         }
 
@@ -114,9 +114,9 @@ const Item = ({id,direccion,estado,setPedidos,navigation}) => {
       <TouchableOpacity 
         style={{marginHorizontal:10,backgroundColor:'#A60703',width:40,borderRadius:5}}  
         activeOpacity={0.8}
-        onPress={add}
+        
       > 
-        <Icon size={40} name="check-circle" color="#f2f2f2" />
+        <Icon size={40} name="cellphone-marker" color="#f2f2f2" />
       </TouchableOpacity>
 
       <TouchableOpacity 
@@ -131,7 +131,7 @@ const Item = ({id,direccion,estado,setPedidos,navigation}) => {
   );
 }
 
-const OrdersRestaurant = ({navigation}) => {
+const OrdersDelivered = ({navigation}) => {
 
   const isFocused = useIsFocused();
   const [pedidos,setPedidos] = useState([]);
@@ -157,7 +157,7 @@ const OrdersRestaurant = ({navigation}) => {
             setPedidos(datos);
           }
       };
-      xhttp.open("GET", constans.url_api+"/delivery/iniciado", true);
+      xhttp.open("GET", constans.url_api+"/delivery/enviado", true);
       xhttp.send();
       
     }
@@ -181,4 +181,4 @@ const OrdersRestaurant = ({navigation}) => {
   };
 
 
-export default OrdersRestaurant;
+export default OrdersDelivered;

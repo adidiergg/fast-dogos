@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useContext} from 'react';
 import {
   FlatList,
   ScrollView,
@@ -12,32 +12,32 @@ import { useIsFocused } from '@react-navigation/native';
 import { styles } from '../../../assets/css/style';
 import { constans } from '../../constants';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { AuthContext } from '../../context/AuthContext';
 
 
 const Item = ({id,direccion,estado,setPedidos,navigation}) => {
+    const [total,setTotal] = useState(0);
+    const {user} = useContext(AuthContext)
 
-  const [total,setTotal] = useState(0);
-
-
-  React.useEffect(() => {
+    React.useEffect(() => {
+        
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+            datos = JSON.parse(xhttp.responseText);
+            setTotal(datos.total);
+            }
+        };
+        xhttp.open("GET", constans.url_api+"/delivery/total/"+String(id), true);
+        xhttp.send();
     
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          datos = JSON.parse(xhttp.responseText);
-          setTotal(datos.total);
-        }
-    };
-    xhttp.open("GET", constans.url_api+"/delivery/total/"+String(id), true);
-    xhttp.send();
+    
+    },[]);
   
- 
-  },[]);
-
-  const add = () => {
+  const update = () => {
       var http = new XMLHttpRequest();
       var url = constans.url_api+"/delivery/"+String(id);
-      var params = 'estado=ACEPTADO';
+      var params = 'estado=ENTREGADO';
       http.open('PUT', url, true);
       //Send the proper header information along with the request
       http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -48,10 +48,10 @@ const Item = ({id,direccion,estado,setPedidos,navigation}) => {
                 if (this.readyState == 4 && this.status == 200) {
                   datos = JSON.parse(xhttp.responseText);
                   console.log(datos)
-                  setPedidos(datos);
+                  setPedidos(datos.entregas      );
                 }
             };
-            xhttp.open("GET", constans.url_api+"/delivery/iniciado", true);
+            xhttp.open("GET", constans.url_api+"/delivery/deliver/"+user, true);
             xhttp.send();
           }
   
@@ -63,40 +63,13 @@ const Item = ({id,direccion,estado,setPedidos,navigation}) => {
       }
       http.send(params);
   }
+  
 
 
-  const remove = () => {
-    var http = new XMLHttpRequest();
-    var url = constans.url_api+"/delivery/"+String(id);
-    var params = 'estado=CANCELADO';
-    http.open('PUT', url, true);
-    //Send the proper header information along with the request
-    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    http.onreadystatechange = function() {//Call a function when the state changes.
-        if(http.readyState == 4 && http.status == 200) {
-          var xhttp = new XMLHttpRequest();
-          xhttp.onreadystatechange = function() {
-              if (this.readyState == 4 && this.status == 200) {
-                datos = JSON.parse(xhttp.responseText);
-                console.log(datos)
-                setPedidos(datos);
-              }
-          };
-          xhttp.open("GET", constans.url_api+"/delivery/iniciado", true);
-          xhttp.send();
-        }
-
-        if(http.readyState == 4 && http.status == 400) {
-          Alert.alert("Error","No se puedo aceptar");
-        }
-
-
-    }
-    http.send(params);
-  }
+  
 
   return(
-    <TouchableOpacity onPress={()=> navigation.navigate("orderDetailRestaurant",{id:id})} activeOpacity={0.8} style={styles.item}>
+    <TouchableOpacity onPress={()=> navigation.navigate("orderDetailDelivery",{id:id})} activeOpacity={0.8} style={styles.item}>
       <Text style={{fontFamily:'LilyScriptOne-Regular',textAlign:'center',color:'#A60703'}}>Numero de pedido: {id}</Text>
       <View style={styles.itemDelively}>
           <View>
@@ -114,27 +87,31 @@ const Item = ({id,direccion,estado,setPedidos,navigation}) => {
       <TouchableOpacity 
         style={{marginHorizontal:10,backgroundColor:'#A60703',width:40,borderRadius:5}}  
         activeOpacity={0.8}
-        onPress={add}
+        onPress={()=> navigation.navigate("orderMapDelivery",{id:id})}
       > 
-        <Icon size={40} name="check-circle" color="#f2f2f2" />
+        <Icon size={40} name="cellphone-marker" color="#f2f2f2" />
       </TouchableOpacity>
 
       <TouchableOpacity 
         style={{marginHorizontal:10,backgroundColor:'#A60703',width:40,borderRadius:5}}  
         activeOpacity={0.8}
-        onPress={remove}
+        onPress={update}
       > 
-        <Icon size={40} name="close-circle" color="#f2f2f2" />
+        <Icon size={40} name="check-circle" color="#f2f2f2" />
       </TouchableOpacity>
+
+      
       </View>
     </TouchableOpacity>
   );
 }
 
-const OrdersRestaurant = ({navigation}) => {
+const OrdersDelivery = ({navigation}) => {
 
   const isFocused = useIsFocused();
   const [pedidos,setPedidos] = useState([]);
+  const {user} = useContext(AuthContext)
+
 
   const renderItem = ({ item }) => {
     return(
@@ -146,6 +123,8 @@ const OrdersRestaurant = ({navigation}) => {
   }
 
 
+  
+
   React.useEffect(() => {
     if (isFocused===true){
       
@@ -154,10 +133,10 @@ const OrdersRestaurant = ({navigation}) => {
           if (this.readyState == 4 && this.status == 200) {
             datos = JSON.parse(xhttp.responseText);
             console.log(datos)
-            setPedidos(datos);
+            setPedidos(datos.entregas);
           }
       };
-      xhttp.open("GET", constans.url_api+"/delivery/iniciado", true);
+      xhttp.open("GET", constans.url_api+"/delivery/deliver/"+user, true);
       xhttp.send();
       
     }
@@ -181,4 +160,4 @@ const OrdersRestaurant = ({navigation}) => {
   };
 
 
-export default OrdersRestaurant;
+export default OrdersDelivery;

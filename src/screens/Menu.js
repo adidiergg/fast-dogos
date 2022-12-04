@@ -11,7 +11,7 @@ import SimpleLineIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MenuClient from './client/MenuClient'
 import OrdersClient from './client/OrdersClient';
 import CartClient from './client/CartClient';
-import OrdersDelively from './delively/OrdersDelively';
+import OrdersDelivery from './delively/OrdersDelivery';
 import OrdersRestaurant from './restaurant/OrdersRestaurant';
 import { AuthContext } from '../context/AuthContext';
 import IndexRestaurant from './restaurant/menu/IndexMenu';
@@ -23,6 +23,14 @@ import UpdateMenu from './restaurant/menu/UpdateMenu';
 import AddCart from './client/AddCart';
 import EditClient from './client/EditClient';
 import OrderClient from './client/OrderClient';
+import OrderDetailClient from './client/OrderDetailClient';
+import OrdersAccepted from './restaurant/OrdersAccepted';
+import OrdersDelivered from './restaurant/OrdersDelivered';
+import AssignDeliver from './restaurant/AssignDeliver';
+import OrderDetailRestaurant from './restaurant/OrderDetailRestaurant';
+import OrderDetailDelivery from './delively/OrderDetailDelivery';
+import OrderMapDelivery from './delively/OrderMapDelivery';
+
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -58,12 +66,16 @@ function TabMenu() {
             iconName = focused ? 'account-cog' : 'account-cog';
           } else if (route.name === 'ordersClient') {
             iconName = focused ? 'food-hot-dog' : 'food-hot-dog';
-          } else if (route.name === 'ordersDelively') {
+          } else if (route.name === 'orderDetailDelivery') {
             iconName = focused ? 'wallet-travel' : 'wallet-travel';
           } else if (route.name === 'ordersRestaurant') {
             iconName = focused ? 'wallet-travel' : 'wallet-travel';
           } else if (route.name === 'indexRestaurant') {
             iconName = focused ? 'silverware' : 'silverware';
+          } else if (route.name === 'ordersAccepted') {
+            iconName = focused ? 'silverware' : 'silverware';
+          } else if (route.name === 'ordersDelivered') {
+            iconName = focused ? 'map-marker' : 'map-marker';
           }
 
           // You can return any component that you like here!
@@ -172,6 +184,9 @@ function TabMenu() {
               }}  component={Setup} />
 
 
+              
+
+
             </>: 
             null
         }
@@ -179,7 +194,7 @@ function TabMenu() {
         {
         role==='REPARTIDOR' ? 
             <>
-              <Tab.Screen  name="ordersDelively" options={{
+              <Tab.Screen  name="ordersDelivery" options={{
               title: 'Entregas',
               headerStyle: {
                 
@@ -191,7 +206,7 @@ function TabMenu() {
                 fontFamily:'LilyScriptOne-Regular',
                 
               },
-              }}  component={OrdersDelively} />
+              }}  component={OrdersDelivery} />
             </>: 
             null
         }
@@ -200,7 +215,7 @@ function TabMenu() {
         role==='ADMIN' ? 
             <>
               <Tab.Screen  name="ordersRestaurant" options={{
-              title: 'Pedidos',
+              title: 'Aceptar pedido',
               headerStyle: {
                 
                 backgroundColor: '#A60703',
@@ -212,6 +227,39 @@ function TabMenu() {
                 
               },
               }} component={OrdersRestaurant} />
+
+
+              <Tab.Screen  name="ordersAccepted" options={{
+              title: 'Asignar repartidor',
+              headerStyle: {
+                
+                backgroundColor: '#A60703',
+              },
+              headerTitleAlign:'center',
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontFamily:'LilyScriptOne-Regular',
+                
+              },
+              }} component={OrdersAccepted} />
+
+              <Tab.Screen  name="ordersDelivered" options={{
+              title: 'Tracking de pedido',
+              headerStyle: {
+                
+                backgroundColor: '#A60703',
+              },
+              headerTitleAlign:'center',
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontFamily:'LilyScriptOne-Regular',
+                
+              },
+              }} component={OrdersDelivered} />
+
+
+
+
               <Tab.Screen  name="indexRestaurant" options={{
               title: 'Menú',
               headerStyle: {
@@ -305,6 +353,22 @@ function Home()  {
                       },
                       }} 
                     />
+
+                    <Stack.Screen name="orderDetailClient" component={OrderDetailClient} 
+                    options={{
+                      title: 'Detalles de pedido',
+                      headerStyle: {
+                        
+                        backgroundColor: '#A60703',
+                      },
+                      headerTitleAlign:'center',
+                      headerTintColor: '#fff',
+                      headerTitleStyle: {
+                        fontFamily:'LilyScriptOne-Regular',
+                        
+                      },
+                      }} 
+                    />
                 
                 </>: 
                 null
@@ -313,6 +377,38 @@ function Home()  {
               {
               role==='REPARTIDOR' ? 
                 <>
+                  <Stack.Screen name="orderDetailDelivery" component={OrderDetailDelivery} 
+                  options={{
+                    title: 'Detalles de pedido',
+                    headerStyle: {
+                      
+                      backgroundColor: '#A60703',
+                    },
+                    headerTitleAlign:'center',
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                      fontFamily:'LilyScriptOne-Regular',
+                      
+                    },
+                    }} 
+                  />
+
+                  <Stack.Screen name="orderMapDelivery" component={OrderMapDelivery} 
+                  options={{
+                    title: 'Mostrar mapa',
+                    headerStyle: {
+                      
+                      backgroundColor: '#A60703',
+                    },
+                    headerTitleAlign:'center',
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                      fontFamily:'LilyScriptOne-Regular',
+                      
+                    },
+                    }} 
+                  />
+
                 
                 </>: 
                 null
@@ -342,6 +438,39 @@ function Home()  {
                   <Stack.Screen name="updateMenu" component={UpdateMenu} 
                   options={{
                     title: 'Editar dogo',
+                    headerStyle: {
+                      
+                      backgroundColor: '#A60703',
+                    },
+                    headerTitleAlign:'center',
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                      fontFamily:'LilyScriptOne-Regular',
+                      
+                    },
+                    }} 
+                  />
+
+
+                  <Stack.Screen name="assignDeliver" component={AssignDeliver} 
+                  options={{
+                    title: 'Seleccionar repartidor',
+                    headerStyle: {
+                      
+                      backgroundColor: '#A60703',
+                    },
+                    headerTitleAlign:'center',
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                      fontFamily:'LilyScriptOne-Regular',
+                      
+                    },
+                    }} 
+                  />
+
+                  <Stack.Screen name="orderDetailRestaurant" component={OrderDetailRestaurant} 
+                  options={{
+                    title: 'Detalles de pedido',
                     headerStyle: {
                       
                       backgroundColor: '#A60703',

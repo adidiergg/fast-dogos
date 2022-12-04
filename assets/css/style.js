@@ -85,5 +85,16 @@ export const styles = StyleSheet.create({
       },
       menu:{
         padding:10,
-      }
+      },
+      containerMap: {
+        //...StyleSheet.absoluteFillObject,
+        //height: 400,
+        height: '70%',
+        width: '100%',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+      },
+      map: {
+        ...StyleSheet.absoluteFillObject,
+      },
     });

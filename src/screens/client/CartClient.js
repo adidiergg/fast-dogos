@@ -121,7 +121,10 @@ const CartClient = ({navigation}) => {
     //const total = useRef(0);
     
     React.useEffect(() => {
-      //setTotal(0);
+      if(carrito.length === 0){
+        setTotal(0);
+      }
+     
      
       /*
       carrito.map(producto => {
@@ -171,6 +174,18 @@ const CartClient = ({navigation}) => {
     
 
     <View style={styles.container}>
+      
+
+      {  carrito.length===0 ? 
+      <>
+      
+      <Text style={{textAlign:'center',fontFamily:'Lato-Bold',fontSize:18,color:'#A60703'}}>Bienvenido : 
+        <Text style={{fontFamily:'Lato-Bold',fontSize:18,color:'#3d3a35'}}>  Carrito vacio</Text>
+      </Text>
+
+      </>
+      :
+      <>
       <FlatList
         data={carrito}
         renderItem={renderItem}
@@ -186,6 +201,10 @@ const CartClient = ({navigation}) => {
         </TouchableOpacity>
       </View>
       </View>
+      </>
+      }
+
+
     </View>
 
       

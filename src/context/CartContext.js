@@ -23,6 +23,13 @@ const CartProvider = ({children}) => {
               ...prevState,
               carrito: prevState.carrito.filter(producto => producto.position !== action.position)
             };
+
+          case 'RESET':
+            console.log(prevState)
+            return {
+                ...prevState,
+                carrito: [],
+            };
         }
       }
 
@@ -45,6 +52,10 @@ const CartProvider = ({children}) => {
           pop: async ({position}) => {
             console.log('eliminar');
             dispatch({ type: 'REMOVE', position: position });
+          },
+          reset: async () => {
+            console.log('reiniciar');
+            dispatch({ type: 'RESET' });
           },
           carrito:state.carrito,
         }),

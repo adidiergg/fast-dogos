@@ -17,6 +17,7 @@ const AddCart = ({navigation,route}) => {
     const {push} =  useContext(CartContext);
     const [idDogo,setIdDogo] = useState("");
     const [cantidad,setCantidad] = useState("1");
+    const [subtotal,setSubtotal] = useState(0);
     
     React.useEffect(() => {
         const {id} = route.params;
@@ -24,8 +25,8 @@ const AddCart = ({navigation,route}) => {
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 datos = JSON.parse(xhttp.responseText);
-                
                 setDogo(datos);
+
             }
 
             if (this.readyState == 4 && this.status == 400) {
@@ -40,6 +41,11 @@ const AddCart = ({navigation,route}) => {
 
         setIdDogo(id);
     },[]);
+
+
+    React.useEffect(() => {
+      setSubtotal(dogo.precio*cantidad);
+     },[dogo,cantidad]);
 
     const add = () => {
       Alert.alert("Ok","Se agrego a carrito");
@@ -74,7 +80,7 @@ const AddCart = ({navigation,route}) => {
 
           <View style={styles.menu}>
             <Text style={{textAlign:'right',fontFamily:'Lato-Bold',fontSize:18,color:'#A60703'}}>Total: 
-            <Text style={{fontFamily:'Lato-Bold',fontSize:18,color:'#3d3a35'}}> 100 MXN</Text>
+            <Text style={{fontFamily:'Lato-Bold',fontSize:18,color:'#3d3a35'}}> {subtotal} MXN</Text>
             </Text>
             <View  style={styles.btn} >
               <TouchableOpacity onPress={add} style={styles.buttonContainer} activeOpacity={0.8} >
