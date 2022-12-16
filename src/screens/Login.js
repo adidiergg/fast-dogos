@@ -37,11 +37,11 @@ const Login = () => {
                 
 
                 <View style={{padding:30}}>
-                  <Image  style={styles.logo} source={require("../../assets/img/logo.png")}></Image>
+                  <Image onError={e => console.log(e)}  style={styles.logo} source={require("../../assets/img/logo.png")}></Image>
                   <Text style={styles.title} >Fast dogos</Text>  
                   
                   <TextInput  style={styles.input} onChangeText={(usuario) => setUsuario(usuario) }
-                  placeholder="Usuario"
+                  placeholder="Usuario" inlineImageLeft="user"
                   ></TextInput>
 
                   <TextInput  style={styles.input} secureTextEntry={true} onChangeText={(password) => setPassword(password) }

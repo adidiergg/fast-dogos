@@ -47,10 +47,17 @@ const AddCart = ({navigation,route}) => {
       setSubtotal(dogo.precio*cantidad);
      },[dogo,cantidad]);
 
+     
+
     const add = () => {
-      Alert.alert("Ok","Se agrego a carrito");
-      push({id:idDogo,cantidad:cantidad});
-      navigation.goBack();
+
+      if(subtotal!==0){
+        Alert.alert("Ok","Se agrego a carrito");
+        push({id:idDogo,cantidad:cantidad});
+        navigation.goBack();
+      }else{
+        Alert.alert("Error","No se puede pedir 0 dogos");
+      }
     }
     
 
@@ -61,7 +68,7 @@ const AddCart = ({navigation,route}) => {
           <Text style={{fontFamily:'LilyScriptOne-Regular',fontSize:20,textAlign:'center',color:'#A60703'}}>{dogo.nombre}</Text>
 
           <View style={styles.foodPhoto}>
-              <Image style={{flex:1,width:null,height:null,borderRadius:10,}} resizeMode='contain' source={{uri:dogo.imagen}} ></Image>
+              <Image onError={e => console.log(e)} style={{flex:1,width:null,height:null,borderRadius:10,}} resizeMode='contain' source={{uri:dogo.imagen}} ></Image>
           </View>
 
           <View >
@@ -75,7 +82,7 @@ const AddCart = ({navigation,route}) => {
 
           <View style={{marginTop:20}}>
             <Text style={styles.field}>Cantidad:</Text>
-            <TextInput onChangeText={(cantidad) => setCantidad(cantidad)} value={cantidad} keyboardType='numeric' style={styles.input} ></TextInput>
+            <TextInput  onChangeText={(cantidad) => setCantidad(cantidad)} value={cantidad} keyboardType='numeric' style={styles.input} ></TextInput>
           </View>
 
           <View style={styles.menu}>

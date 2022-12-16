@@ -76,12 +76,17 @@ const OrderDetailClient = ({navigation,route}) => {
   
     }
 
+    const status = () => {
+      const {id} = route.params;
+      navigation.navigate("orderMapClient",{id:id});
+    }
+
     return (
       <View style={styles.container}>
         <FlatList
           data={detalles}
           renderItem={renderItem}
-          keyExtractor={item => item.num}
+          keyExtractor={item => item.id}
         />
 
 
@@ -90,7 +95,7 @@ const OrderDetailClient = ({navigation,route}) => {
           <Text style={{fontFamily:'Lato-Bold',fontSize:18,color:'#3d3a35'}}> {total} MXN</Text>
           </Text>
           <View  style={styles.btn} >
-            <TouchableOpacity  onPress={() => navigation.navigate("orderClient")} style={styles.buttonContainer} activeOpacity={0.8} >
+            <TouchableOpacity  onPress={status} style={styles.buttonContainer} activeOpacity={0.8} >
               <Text style={styles.buttonText}>Mostrar progreso</Text>
             </TouchableOpacity>
           </View>

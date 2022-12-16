@@ -49,7 +49,31 @@ const OrderMapDelivery = ({navigation,route}) => {
       React.useEffect(() => {
         
         console.log(locationStatus);
-      },[locationStatus]);
+        if(locationStatus==="Ok"){
+          const {id} = route.params;
+
+          var http = new XMLHttpRequest();
+          var url = constans.url_api+"/delivery/"+String(id);
+          var params = 'ubicacion_repartidor='+'{"latitude":'+String(currentLatitude)+',"longitude":'+String(currentLongitude)+'}';
+          http.open('PUT', url, true);
+          //Send the proper header information along with the request
+          http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+          http.onreadystatechange = function() {//Call a function when the state changes.
+              if(http.readyState == 4 && http.status == 200) {
+                datos = http.responseText;
+                console.log(datos)
+              }
+      
+              if(http.readyState == 4 && http.status == 400) {
+                console.log("aca apa");
+                //Alert.alert("Error","No se puedo aceptar");
+              }
+      
+      
+          }
+          http.send(params);
+        }
+      },[currentLatitude]);
 
 
     React.useEffect(() => {
@@ -59,7 +83,7 @@ const OrderMapDelivery = ({navigation,route}) => {
         latitudeDelta: 0.1,
         longitudeDelta: 0.1,
       });
-      
+
     },[currentLatitude,currentLongitude]);
 
 
@@ -225,9 +249,7 @@ const OrderMapDelivery = ({navigation,route}) => {
           'https://maps.googleapis.com/maps/api/directions/json?origin='+startLoc+'&destination='+destinationLoc+'&key='+KEY
         );
         let respJson = await resp.json();
-        console.log(respJson.routes[0].traffic_speed_entry);
         let points = decode(respJson.routes[0].overview_polyline.points);
-        console.log(points);
         let coords = points.map((point, index) => {
           return {
             latitude: point[0],
@@ -251,11 +273,7 @@ const OrderMapDelivery = ({navigation,route}) => {
         );
         
         let respJson = await resp.json();
-        console.log(respJson)
-        
         if(respJson.code=="Ok"){
-          console.log(respJson.routes[0].duration)
-          console.log("----------");
           const time = Number(respJson.routes[0].duration)
           var minutes = Math.floor(time/60);
           //var seconds = time % 60;
@@ -276,7 +294,7 @@ const OrderMapDelivery = ({navigation,route}) => {
     React.useEffect(() => {
       const timer = setTimeout(() => {
         getOneTimeLocation();
-      }, 5000);
+      }, 3000);
       return () => clearTimeout(timer);
     });
 
@@ -293,34 +311,50 @@ const OrderMapDelivery = ({navigation,route}) => {
             <View style={styles.containerMap}>
             
                 <MapView
-              
+                //loadingEnabled={false}
                 style={styles.map}
-                region={region}
-
-                onRegionChange={region => console.log("--------"+region)} 
-                
-
-                
+                initialRegion={region}
                 >
 
 
                     <Marker coordinate={{
                         latitude: Number(cliente.latitude),
                         longitude: Number(cliente.longitude),
-                        latitudeDelta: 0.015,
-                        longitudeDelta: 0.0121,
+                        latitudeDelta: 0,
+                        longitudeDelta:0,
                     }} 
-                    />
+                    >
+                       <Image
+                          source={{uri:'http://maps.google.com/mapfiles/ms/micons/homegardenbusiness.png'}}
+                          style={{width: 30, height: 30}}
+                          resizeMode="contain"
+                        />
+
+                    </Marker>
 
                     <Marker coordinate={{
                         latitude: Number(currentLatitude),
                         longitude: Number(currentLongitude),
-                        latitudeDelta: 0.015,
-                        longitudeDelta: 0.0121,
+                        latitudeDelta:0,
+                        longitudeDelta: 0,
+                        
                     }} 
-                    />
                     
-                    {coords.length > 0 && <Polyline coordinates={coords} />}
+
+
+                    
+                    >
+                        <Image
+                          source={{uri:'http://maps.google.com/mapfiles/ms/micons/motorcycling.png'}}
+                          style={{width: 30, height: 30}}
+                          resizeMode="contain"
+                        />
+
+
+                    </Marker>
+                    
+                    {coords.length > 0 && <Polyline  strokeColor={'indigo'}
+  strokeWidth={3} coordinates={coords} />}
                     
 
                 </MapView>

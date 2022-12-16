@@ -26,6 +26,10 @@ const Register = () => {
   const [celular,setCelular] = useState("");
   const [password,setPassword] = useState("");
 
+  React.useEffect(() => {
+  
+  },[usuario,nombre,celular,password]);
+
   const signUp = () => {
     var http = new XMLHttpRequest();
     var url = constans.url_api+"/user";
@@ -36,6 +40,7 @@ const Register = () => {
     http.onreadystatechange = function() {//Call a function when the state changes.
         if(http.readyState == 4 && http.status == 200) {
           Alert.alert("Ok",http.responseText);
+          
         }
 
         if(http.readyState == 4 && http.status == 400) {

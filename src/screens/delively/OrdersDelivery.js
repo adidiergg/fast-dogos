@@ -48,7 +48,7 @@ const Item = ({id,direccion,estado,setPedidos,navigation}) => {
                 if (this.readyState == 4 && this.status == 200) {
                   datos = JSON.parse(xhttp.responseText);
                   console.log(datos)
-                  setPedidos(datos.entregas      );
+                  setPedidos(datos.entregas);
                 }
             };
             xhttp.open("GET", constans.url_api+"/delivery/deliver/"+user, true);

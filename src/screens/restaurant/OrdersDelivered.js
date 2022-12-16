@@ -114,7 +114,7 @@ const Item = ({id,direccion,estado,setPedidos,navigation}) => {
       <TouchableOpacity 
         style={{marginHorizontal:10,backgroundColor:'#A60703',width:40,borderRadius:5}}  
         activeOpacity={0.8}
-        
+        onPress={() => navigation.navigate("orderMapClient",{id:id})}
       > 
         <Icon size={40} name="cellphone-marker" color="#f2f2f2" />
       </TouchableOpacity>

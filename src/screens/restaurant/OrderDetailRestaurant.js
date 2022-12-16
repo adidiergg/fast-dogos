@@ -81,7 +81,7 @@ const OrderDetailRestaurant = ({navigation,route}) => {
         <FlatList
           data={detalles}
           renderItem={renderItem}
-          keyExtractor={item => item.num}
+          keyExtractor={item => item.id}
         />
         <View style={styles.menu}>
           <Text style={{textAlign:'right',fontFamily:'Lato-Bold',fontSize:18,color:'#A60703'}}>Total: 

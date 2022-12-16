@@ -30,6 +30,7 @@ import AssignDeliver from './restaurant/AssignDeliver';
 import OrderDetailRestaurant from './restaurant/OrderDetailRestaurant';
 import OrderDetailDelivery from './delively/OrderDetailDelivery';
 import OrderMapDelivery from './delively/OrderMapDelivery';
+import OrderMapClient from './client/OrderMapClient';
 
 
 const Stack = createNativeStackNavigator();
@@ -368,6 +369,27 @@ function Home()  {
                         
                       },
                       }} 
+
+
+                    />
+
+
+                    <Stack.Screen name="orderMapClient" component={OrderMapClient} 
+                    options={{
+                      title: 'Progreso de pedido',
+                      headerStyle: {
+                        
+                        backgroundColor: '#A60703',
+                      },
+                      headerTitleAlign:'center',
+                      headerTintColor: '#fff',
+                      headerTitleStyle: {
+                        fontFamily:'LilyScriptOne-Regular',
+                        
+                      },
+                      }} 
+
+                      
                     />
                 
                 </>: 
@@ -483,6 +505,25 @@ function Home()  {
                     },
                     }} 
                   />
+
+
+                    <Stack.Screen name="orderMapClient" component={OrderMapClient} 
+                    options={{
+                      title: 'Progreso de pedido',
+                      headerStyle: {
+                        
+                        backgroundColor: '#A60703',
+                      },
+                      headerTitleAlign:'center',
+                      headerTintColor: '#fff',
+                      headerTitleStyle: {
+                        fontFamily:'LilyScriptOne-Regular',
+                        
+                      },
+                      }} 
+
+                      
+                    />
                 
                 </>: 
                 null
